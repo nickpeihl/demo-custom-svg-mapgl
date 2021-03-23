@@ -7,6 +7,8 @@ import getContext from "get-canvas-context";
 const map = new mapboxgl.Map({
   container: "map",
   style: "https://tiles.maps.elastic.co/styles/dark-matter/style.json",
+  zoom: 2,
+  center: [-180, 0]
 });
 
 const INF = 1e20;
@@ -46,6 +48,7 @@ function establishDragDrop() {
           const { data, width, height } = draw(image, 64, 64);
           const img = makeRGBAImageData(data, width, height);
           map.addImage("my-custom-svg", img, { sdf: true });
+          addIconLayer();
         });
       });
     }
@@ -163,9 +166,7 @@ function edt1d(grid, offset, stride, length, f, v, z) {
   }
 }
 
-map.on("load", function () {
-  establishDragDrop();
-
+function addIconLayer () {
   map.addLayer({
     id: "points",
     type: "symbol",
@@ -184,6 +185,10 @@ map.on("load", function () {
       "icon-halo-color": ["get", "halo_color"],
     },
   });
+}
+
+map.on("load", function () {
+  establishDragDrop();
 
   var popup = new mapboxgl.Popup({
     closeButton: false,
